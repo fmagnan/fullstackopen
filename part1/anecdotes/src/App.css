@@ -1,0 +1,11 @@
+.anecdote {
+  font-size: 16px;
+  padding: 15px;
+  border-radius: 5px;
+  background: lightyellow;
+  margin: 20px;
+  color: black;
+  border: 1px solid lightgrey;
+  text-transform: italic;
+  width: 320px;
+}
