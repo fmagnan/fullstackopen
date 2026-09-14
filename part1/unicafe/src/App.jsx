@@ -1,5 +1,61 @@
 import { useState } from "react";
 
+const Button = ({ text, counter, setCounter }) => {
+  const increment = () => setCounter(counter + 1);
+
+  return (
+    <>
+      <button onClick={() => increment()}>{text}</button>
+    </>
+  );
+};
+
+const Feedbacks = ({ good, setGood, neutral, setNeutral, bad, setBad }) => {
+  return (
+    <div>
+      <h2>give feedbacks</h2>
+      <Button text="good" counter={good} setCounter={setGood} />
+      <Button text="neutral" counter={neutral} setCounter={setNeutral} />
+      <Button text="bad" counter={bad} setCounter={setBad} />
+    </div>
+  );
+};
+
+const StatisticLine = ({ text, value }) => {
+  return (
+    <>
+      {text} {value}
+      <br />
+    </>
+  );
+};
+
+const Statistics = ({ good, neutral, bad }) => {
+  const all = () => good + neutral + bad;
+
+  const average = () => (good - bad) / all();
+
+  const positive = () => (good * 100) / all();
+
+  if (all() == 0) {
+    return <p>No feedback given</p>;
+  } else {
+    return (
+      <div>
+        <h2>statistics</h2>
+        <p>
+          <StatisticLine text="good" value={good} />
+          <StatisticLine text="neutral" value={neutral} />
+          <StatisticLine text="bad" value={bad} />
+          <StatisticLine text="all" value={all()} />
+          <StatisticLine text="average" value={average()} />
+          <StatisticLine text="positive" value={positive()} />
+        </p>
+      </div>
+    );
+  }
+};
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0);
@@ -9,14 +65,15 @@ const App = () => {
   return (
     <div>
       <h1>Unicafe</h1>
-      <h2>give feedbacks</h2>
-      <button onClick={() => setGood(good + 1)}>good</button>
-      <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
-      <button onClick={() => setBad(bad + 1)}>bad</button>
-      <h2>statistics</h2>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
+      <Feedbacks
+        good={good}
+        setGood={setGood}
+        neutral={neutral}
+        setNeutral={setNeutral}
+        bad={bad}
+        setBad={setBad}
+      />
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
 };
