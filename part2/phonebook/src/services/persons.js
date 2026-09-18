@@ -12,8 +12,14 @@ const create = (personObject) => {
   return request.then((response) => response.data);
 };
 
-const remove = (personObject) => {
-  const request = axios.delete(baseUrl + "/" + personObject.id);
+const remove = (id) => {
+  const request = axios.delete(`${baseUrl}/${id}`);
+  return request.then((response) => response.data);
+};
+
+const update = (id, personObject) => {
+  console.log("on modifier ", personObject);
+  const request = axios.put(`${baseUrl}/${id}`, personObject);
   return request.then((response) => response.data);
 };
 
@@ -21,4 +27,5 @@ export default {
   getAll,
   create,
   remove,
+  update,
 };
