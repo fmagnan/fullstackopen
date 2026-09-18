@@ -1,17 +1,23 @@
-const Person = ({ name, number }) => {
+const Person = ({ name, number, deletePerson }) => {
   return (
     <li>
-      {name} : {number}
+      {name} : {number}&nbsp;
+      <button onClick={deletePerson}>delete</button>
     </li>
   );
 };
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, deletePerson }) => {
   return (
     <>
       <ul>
         {persons.map((person) => (
-          <Person key={person.name} name={person.name} number={person.number} />
+          <Person
+            key={person.id}
+            name={person.name}
+            number={person.number}
+            deletePerson={() => deletePerson(person)}
+          />
         ))}
       </ul>
     </>

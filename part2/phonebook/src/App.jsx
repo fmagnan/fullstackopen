@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import PersonService from "./services/persons";
+import personService from "./services/persons";
 
 const App = () => {
   const [newName, setNewName] = useState("");
@@ -19,7 +19,7 @@ const App = () => {
   );
 
   useEffect(() => {
-    PersonService.getAll().then((initialPersons) => {
+    personService.getAll().then((initialPersons) => {
       setPersons(initialPersons);
     });
   }, []);
@@ -36,7 +36,7 @@ const App = () => {
       number: newNumber,
     };
 
-    PersonService.create(personObject).then((returnedPerson) => {
+    personService.create(personObject).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
       setNewName("");
       setNewNumber("");
@@ -55,6 +55,15 @@ const App = () => {
     setSearch(event.target.value);
   };
 
+  const deletePerson = (personObject) => {
+    if (!window.confirm(`Delete ${personObject.name}?`)) {
+      return;
+    }
+    personService.remove(personObject).then(() => {
+      setPersons(persons.filter(person => person.id !== personObject.id));
+    });
+  };
+
   return (
     <>
       <h2>Phonebook</h2>
@@ -68,7 +77,7 @@ const App = () => {
         submit={addPerson}
       />
       <h3>Numbers</h3>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deletePerson={deletePerson} />
     </>
   );
 };
