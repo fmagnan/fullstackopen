@@ -25,14 +25,26 @@ const App = () => {
     });
   }, []);
 
+  const showNotification = (message, state) => {
+    setNotificationStatus(state);
+    setNotificationMessage(message);
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 3000);
+  };
+
+  const showSuccess = (message) => {
+    showNotification(message, "success");
+  };
+
+  const showError = (message) => {
+    showNotification(message, "error");
+  };
+
   const resetForm = (personObject) => {
     setNewName("");
     setNewNumber("");
-    setNotificationStatus("success");
-    setNotificationMessage(`Added ${personObject.name}`);
-    setTimeout(() => {
-      setNotificationMessage(null);
-    }, 2000);
+    showSuccess(`Added ${personObject.name}`);
   };
 
   const addPerson = (event) => {
@@ -53,13 +65,17 @@ const App = () => {
       personService
         .update(existingPerson.id, personObject)
         .then((returnedPerson) => {
-          console.log("then");
           setPersons(
             persons.map((person) =>
               person.name !== returnedPerson.name ? person : returnedPerson,
             ),
           );
           resetForm(personObject);
+        })
+        .catch((error) => {
+          showError(
+            `Information of '${existingPerson.name}' has already been removed from server`,
+          );
         });
     } else {
       personService.create(personObject).then((returnedPerson) => {
