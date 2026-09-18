@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import PersonService from "./services/persons";
 
 const App = () => {
   const [newName, setNewName] = useState("");
@@ -18,6 +18,12 @@ const App = () => {
       search === "",
   );
 
+  useEffect(() => {
+    PersonService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
+    });
+  }, []);
+
   const addPerson = (event) => {
     event.preventDefault();
     if (persons.find((person) => person.name === newName) !== undefined) {
@@ -30,9 +36,11 @@ const App = () => {
       number: newNumber,
     };
 
-    setPersons(persons.concat(personObject));
-    setNewName("");
-    setNewNumber("");
+    PersonService.create(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setNewName("");
+      setNewNumber("");
+    });
   };
 
   const handleNameChange = (event) => {
@@ -46,12 +54,6 @@ const App = () => {
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
-
-  useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
-  }, []);
 
   return (
     <>
