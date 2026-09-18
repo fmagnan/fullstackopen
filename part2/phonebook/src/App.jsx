@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import personService from "./services/persons";
@@ -7,10 +8,10 @@ import personService from "./services/persons";
 const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
-
   const [persons, setPersons] = useState([]);
-
   const [search, setSearch] = useState("");
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [notificationStatus, setNotificationStatus] = useState("success");
 
   const personsToShow = persons.filter(
     (element) =>
@@ -23,6 +24,16 @@ const App = () => {
       setPersons(initialPersons);
     });
   }, []);
+
+  const resetForm = (personObject) => {
+    setNewName("");
+    setNewNumber("");
+    setNotificationStatus("success");
+    setNotificationMessage(`Added ${personObject.name}`);
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 2000);
+  };
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -39,20 +50,21 @@ const App = () => {
       ) {
         return;
       }
-      personService.update(existingPerson.id, personObject).then((returnedPerson) => {
-        setPersons(
-          persons.map((person) =>
-            person.name !== returnedPerson.name ? person : returnedPerson,
-          ),
-        );
-        setNewName("");
-        setNewNumber("");
-      });
+      personService
+        .update(existingPerson.id, personObject)
+        .then((returnedPerson) => {
+          console.log("then");
+          setPersons(
+            persons.map((person) =>
+              person.name !== returnedPerson.name ? person : returnedPerson,
+            ),
+          );
+          resetForm(personObject);
+        });
     } else {
       personService.create(personObject).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
+        resetForm(personObject);
       });
     }
   };
@@ -81,6 +93,7 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} status={notificationStatus} />
       <Filter search={search} handler={handleSearchChange} />
       <h3>Add a new</h3>
       <PersonForm

@@ -19,6 +19,26 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": "4"
+    },
+    {
+      "name": "Martin Fowler",
+      "number": "222",
+      "id": "kkzWxEIQ3uU"
+    },
+    {
+      "name": "alistair",
+      "number": "hogxa",
+      "id": "fHVyvl2RuOQ"
+    },
+    {
+      "name": "james bond",
+      "number": "999",
+      "id": "UK0RpDmsz3A"
+    },
+    {
+      "name": "scott scummers",
+      "number": "444",
+      "id": "TkeVjcrq5lU"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
