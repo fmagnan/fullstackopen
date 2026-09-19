@@ -26,13 +26,16 @@ const App = () => {
     setSelectedCountry(country);
   };
 
+  const countryToShow =
+    countriesToShow.length === 1 ? countriesToShow[0] : selectedCountry;
+
   return (
     <div>
       <label>find countries</label>
       <input value={countryFilter} onChange={handleCountryFilterChange} />
       <MainContent
         countries={countriesToShow}
-        selectedCountry={selectedCountry}
+        selectedCountry={countryToShow}
         showCountry={showCountry}
       />
     </div>
