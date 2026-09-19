@@ -1,5 +1,10 @@
-label {
-  margin-right: 5px;
+button,
+input {
+  margin-left: 5px;
+}
+
+li {
+  margin-bottom: 3px;
 }
 
 .error {

@@ -5,6 +5,7 @@ import countryService from "./services/countries";
 const App = () => {
   const [countryFilter, setCountryFilter] = useState("");
   const [countries, setCountries] = useState([]);
+  const [detailedCountry, setDetailedCountry] = useState(null);
 
   useEffect(() => {
     countryService.all().then((initialCountries) => {
@@ -14,6 +15,7 @@ const App = () => {
 
   const handleCountryFilterChange = (event) => {
     setCountryFilter(event.target.value.toLowerCase());
+    setDetailedCountry(null);
   };
 
   const countriesToShow = countries.filter((country) =>
@@ -24,7 +26,11 @@ const App = () => {
     <div>
       <label>find countries</label>
       <input value={countryFilter} onChange={handleCountryFilterChange} />
-      <Countries countries={countriesToShow} />
+      <Countries
+        countries={countriesToShow}
+        detailedCountry={detailedCountry}
+        setDetailedCountry={setDetailedCountry}
+      />
     </div>
   );
 };

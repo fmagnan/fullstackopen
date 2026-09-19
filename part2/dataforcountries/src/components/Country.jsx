@@ -1,5 +1,10 @@
-const Country = ({ country }) => {
-  return <li>{country.name.common}</li>;
+const Country = ({ country, showCountry }) => {
+  return (
+    <li>
+      <span>{country.name.common}</span>
+      <button onClick={showCountry}>Show</button>
+    </li>
+  );
 };
 
 export default Country;
