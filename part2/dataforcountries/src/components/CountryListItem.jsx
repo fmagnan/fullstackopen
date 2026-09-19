@@ -1,4 +1,4 @@
-const Country = ({ country, showCountry }) => {
+const CountryListItem = ({ country, showCountry }) => {
   return (
     <li>
       <span>{country.name.common}</span>
@@ -7,4 +7,4 @@ const Country = ({ country, showCountry }) => {
   );
 };
 
-export default Country;
+export default CountryListItem;

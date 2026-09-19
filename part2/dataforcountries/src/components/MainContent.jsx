@@ -1,11 +1,11 @@
 import Countries from "./Countries";
 import CountryView from "./CountryView";
 
-const MainContent = ({ countries, selectedCountry, showCountry }) => {
+const MainContent = ({ countries, selectedCountry, showCountry, weather }) => {
   if (selectedCountry !== null) {
     return (
       <>
-        <CountryView country={selectedCountry} />
+        <CountryView country={selectedCountry} weather={weather}/>
       </>
     );
   }

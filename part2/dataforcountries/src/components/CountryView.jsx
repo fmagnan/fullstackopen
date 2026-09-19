@@ -1,10 +1,12 @@
 import Language from "./Language";
 
-const CountryView = ({ country }) => {
+const CountryView = ({ country, weather }) => {
   let languages = [];
   for (var key in country.languages) {
     languages.push(country.languages[key]);
   }
+
+  console.log(weather);
 
   return (
     <div>
@@ -22,6 +24,7 @@ const CountryView = ({ country }) => {
       </div>
       <h2>Weather in {country.capital}</h2>
       <div>Temperature: foo</div>
+      <div>Timezone: bazz</div>
       <div>
         <img
           src={`https://openweathermap.org/payload/api/media/file/04d.png`}
