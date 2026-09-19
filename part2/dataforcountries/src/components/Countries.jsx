@@ -1,9 +1,9 @@
-import Country from "./Country";
+import CountryListItem from "./CountryListItem";
 import DetailedCountry from "./DetailedCountry";
 
-const Countries = ({ countries, detailedCountry, setDetailedCountry }) => {
+const Countries = ({ countries, selectedCountry, setSelectedCountry }) => {
   const showCountry = (country) => {
-    setDetailedCountry(country);
+    setSelectedCountry(country);
   };
 
   if (countries.length > 10) {
@@ -18,10 +18,10 @@ const Countries = ({ countries, detailedCountry, setDetailedCountry }) => {
       </>
     );
   }
-  if (detailedCountry !== null) {
+  if (selectedCountry !== null) {
     return (
       <>
-        <DetailedCountry country={detailedCountry} />
+        <DetailedCountry country={selectedCountry} />
       </>
     );
   }
@@ -29,7 +29,7 @@ const Countries = ({ countries, detailedCountry, setDetailedCountry }) => {
   return (
     <ul>
       {countries.map((country) => (
-        <Country
+        <CountryListItem
           key={country.cca3}
           country={country}
           showCountry={() => showCountry(country)}
