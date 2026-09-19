@@ -1,28 +1,9 @@
 import CountryListItem from "./CountryListItem";
-import CountryView from "./CountryView";
 
-const Countries = ({ countries, selectedCountry, setSelectedCountry }) => {
-  const showCountry = (country) => {
-    setSelectedCountry(country);
-  };
-
+const Countries = ({ countries, showCountry }) => {
   if (countries.length > 10) {
     return (
       <div className="error">Too many matches, specify another filter</div>
-    );
-  }
-  if (countries.length === 1) {
-    return (
-      <>
-        <CountryView country={countries[0]} />
-      </>
-    );
-  }
-  if (selectedCountry !== null) {
-    return (
-      <>
-        <CountryView country={selectedCountry} />
-      </>
     );
   }
 

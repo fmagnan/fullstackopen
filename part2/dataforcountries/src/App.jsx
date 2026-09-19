@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Countries from "./components/Countries";
+import MainContent from "./components/MainContent";
 import countryService from "./services/countries";
 
 const App = () => {
@@ -22,14 +22,18 @@ const App = () => {
     country.name.common.toLowerCase().includes(countryFilter),
   );
 
+  const showCountry = (country) => {
+    setSelectedCountry(country);
+  };
+
   return (
     <div>
       <label>find countries</label>
       <input value={countryFilter} onChange={handleCountryFilterChange} />
-      <Countries
+      <MainContent
         countries={countriesToShow}
         selectedCountry={selectedCountry}
-        setSelectedCountry={setSelectedCountry}
+        showCountry={showCountry}
       />
     </div>
   );
