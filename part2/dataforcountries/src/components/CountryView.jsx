@@ -1,3 +1,4 @@
+import Weather from "../components/Weather";
 import Language from "./Language";
 
 const CountryView = ({ country, weather }) => {
@@ -5,8 +6,6 @@ const CountryView = ({ country, weather }) => {
   for (var key in country.languages) {
     languages.push(country.languages[key]);
   }
-
-  console.log(weather);
 
   return (
     <div>
@@ -22,15 +21,7 @@ const CountryView = ({ country, weather }) => {
       <div>
         <img src={country.flags.png} />
       </div>
-      <h2>Weather in {country.capital}</h2>
-      <div>Temperature: foo</div>
-      <div>Timezone: bazz</div>
-      <div>
-        <img
-          src={`https://openweathermap.org/payload/api/media/file/04d.png`}
-        />
-      </div>
-      <div>Wind: bar</div>
+      <Weather capital={country.capital} weather={weather} />
     </div>
   );
 };
