@@ -1,0 +1,8 @@
+label {
+  margin-right: 5px;
+}
+
+.error {
+  text-transform: italic;
+  color: #e30b5c;
+}
