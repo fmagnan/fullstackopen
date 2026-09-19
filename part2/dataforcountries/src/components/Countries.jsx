@@ -1,5 +1,5 @@
 import CountryListItem from "./CountryListItem";
-import DetailedCountry from "./DetailedCountry";
+import CountryView from "./CountryView";
 
 const Countries = ({ countries, selectedCountry, setSelectedCountry }) => {
   const showCountry = (country) => {
@@ -14,14 +14,14 @@ const Countries = ({ countries, selectedCountry, setSelectedCountry }) => {
   if (countries.length === 1) {
     return (
       <>
-        <DetailedCountry country={countries[0]} />
+        <CountryView country={countries[0]} />
       </>
     );
   }
   if (selectedCountry !== null) {
     return (
       <>
-        <DetailedCountry country={selectedCountry} />
+        <CountryView country={selectedCountry} />
       </>
     );
   }
