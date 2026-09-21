@@ -7,14 +7,12 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -rf dist && cd ../../part2/phonebook && npm run build && cp -r dist ../../part3/phonebook_backend"
+    "build:ui": "rm -rf dist && cd ../../part2/phonebook && npm install && npm run build && cp -r dist ../../part3/phonebook_backend"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@vitejs/plugin-react": "^6.1.1",
     "express": "^5.2.1",
-    "morgan": "^1.12.1",
-    "vite": "^8.3.0"
+    "morgan": "^1.12.1"
   }
 }
