@@ -78,10 +78,17 @@ const App = () => {
           );
         });
     } else {
-      personService.create(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        resetForm(personObject);
-      });
+      personService
+        .create(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          resetForm(personObject);
+        })
+        .catch((error) => {
+          showError(
+            `an error occurred while trying to create person: ${error.response.data.error}`,
+          );
+        });
     }
   };
 
