@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
     "express": "^5.2.1",
     "morgan": "^1.12.1",
     "vite": "^8.3.0"
