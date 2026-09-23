@@ -41,10 +41,10 @@ const App = () => {
     showNotification(message, "error");
   };
 
-  const resetForm = (personObject) => {
+  const resetForm = (personObject, action) => {
     setNewName("");
     setNewNumber("");
-    showSuccess(`Added ${personObject.name}`);
+    showSuccess(`${action} ${personObject.name}`);
   };
 
   const addPerson = (event) => {
@@ -53,18 +53,31 @@ const App = () => {
       name: newName,
       number: newNumber,
     };
+    let existingPerson = persons.find((person) => person.name === newName);
+    if (existingPerson !== undefined && newNumber != undefined) {
+      personService
+        .update(existingPerson.id, personObject)
+        .then((returnedPerson) => {
+          setPersons(
+            persons.map((person) =>
+              person.name !== returnedPerson.name ? person : returnedPerson,
+            ),
+          );
+          resetForm(personObject, "Updated");
+        });
+    } else {
       personService
         .create(personObject)
         .then((returnedPerson) => {
           setPersons(persons.concat(returnedPerson));
-          resetForm(personObject);
+          resetForm(personObject, "Added");
         })
         .catch((error) => {
           showError(
             `an error occurred while trying to create person: ${error.response.data.error}`,
           );
         });
-    
+    }
   };
 
   const handleNameChange = (event) => {

@@ -4,8 +4,8 @@ const Person = require("./models/person");
 var morgan = require("morgan");
 const app = express();
 
-app.use(express.json());
 app.use(express.static("dist"));
+app.use(express.json());
 morgan.token("body", function (req, res) {
   return JSON.stringify(req.body);
 });
@@ -20,22 +20,38 @@ app.get("/api/persons", (request, response) => {
   });
 });
 
-app.get("/info", (request, response) => {
+app.get("/info", async (request, response) => {
+  let count = await Person.countDocuments();
   response.send(
-    `Phonebook has info for ${persons.length} people<p>${new Date().toString()}</p>`,
+    `Phonebook has info for ${count} people<p>${new Date().toString()}</p>`,
   );
 });
 
-app.get("/api/persons/:id", (request, response) => {
-  Person.findById(request.params.id).then((person) => {
-    response.json(person);
-  });
+app.get("/api/persons/:id", (request, response, next) => {
+  Person.findById(request.params.id)
+    .then((person) => {
+      response.json(person);
+    })
+    .catch((error) => next(error));
 });
 
-app.delete("/api/persons/:id", (request, response) => {
-  Person.findByIdAndDelete(request.params.id).then((person) => {
-    response.status(204).end();
-  });
+app.put("/api/persons/:id", (request, response, next) => {
+  Person.findById(request.params.id)
+    .then((person) => {
+      person.number = request.body.number;
+      person.save().then((savedPerson) => {
+        response.json(savedPerson);
+      });
+    })
+    .catch((error) => next(error));
+});
+
+app.delete("/api/persons/:id", (request, response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 function generateId(min, max) {
@@ -44,7 +60,7 @@ function generateId(min, max) {
   return Math.floor(Math.random() * (bottom - top) + top);
 }
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", async (request, response) => {
   const body = request.body;
 
   if (!body.name) {
@@ -59,6 +75,12 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
+  if (await Person.exists({ name: body.name })) {
+    return response.status(400).json({
+      error: "name must be unique",
+    });
+  }
+
   const person = new Person({
     name: body.name,
     number: body.number,
@@ -69,6 +91,22 @@ app.post("/api/persons", (request, response) => {
     response.json(savedPerson);
   });
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
