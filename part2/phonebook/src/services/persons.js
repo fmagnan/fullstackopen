@@ -18,7 +18,6 @@ const remove = (id) => {
 };
 
 const update = (id, personObject) => {
-  console.log("on modifier ", personObject);
   const request = axios.put(`${baseUrl}/${id}`, personObject);
   return request.then((response) => response.data);
 };

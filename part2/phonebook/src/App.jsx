@@ -53,31 +53,6 @@ const App = () => {
       name: newName,
       number: newNumber,
     };
-    let existingPerson = persons.find((person) => person.name === newName);
-    if (existingPerson !== undefined && newNumber != undefined) {
-      if (
-        !confirm(
-          `${newName} is already added to phonebook, replace the old number with a new one?`,
-        )
-      ) {
-        return;
-      }
-      personService
-        .update(existingPerson.id, personObject)
-        .then((returnedPerson) => {
-          setPersons(
-            persons.map((person) =>
-              person.name !== returnedPerson.name ? person : returnedPerson,
-            ),
-          );
-          resetForm(personObject);
-        })
-        .catch((error) => {
-          showError(
-            `Information of '${existingPerson.name}' has already been removed from server`,
-          );
-        });
-    } else {
       personService
         .create(personObject)
         .then((returnedPerson) => {
@@ -89,7 +64,7 @@ const App = () => {
             `an error occurred while trying to create person: ${error.response.data.error}`,
           );
         });
-    }
+    
   };
 
   const handleNameChange = (event) => {
