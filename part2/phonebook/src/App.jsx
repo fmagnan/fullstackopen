@@ -64,6 +64,9 @@ const App = () => {
             ),
           );
           resetForm(personObject, "Updated");
+        })
+        .catch((error) => {
+          showError(error.response.data.error);
         });
     } else {
       personService
@@ -73,9 +76,7 @@ const App = () => {
           resetForm(personObject, "Added");
         })
         .catch((error) => {
-          showError(
-            `an error occurred while trying to create person: ${error.response.data.error}`,
-          );
+          showError(error.response.data.error);
         });
     }
   };

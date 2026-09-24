@@ -38,14 +38,18 @@ app.get("/api/persons/:id", (request, response, next) => {
 app.put("/api/persons/:id", (request, response, next) => {
   Person.findById(request.params.id)
     .then((person) => {
+      if (!person) {
+        return response.status(404).end();
+      }
+
       person.number = request.body.number;
-      person.save().then((savedPerson) => {
+
+      return person.save().then((savedPerson) => {
         response.json(savedPerson);
       });
     })
     .catch((error) => next(error));
 });
-
 app.delete("/api/persons/:id", (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then((result) => {
@@ -60,20 +64,8 @@ function generateId(min, max) {
   return Math.floor(Math.random() * (bottom - top) + top);
 }
 
-app.post("/api/persons", async (request, response) => {
+app.post("/api/persons", async (request, response, next) => {
   const body = request.body;
-
-  if (!body.name) {
-    return response.status(400).json({
-      error: "name missing",
-    });
-  }
-
-  if (!body.number) {
-    return response.status(400).json({
-      error: "number missing",
-    });
-  }
 
   if (await Person.exists({ name: body.name })) {
     return response.status(400).json({
@@ -87,9 +79,12 @@ app.post("/api/persons", async (request, response) => {
     id: generateId(1, 999999),
   });
 
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (request, response) => {
@@ -102,6 +97,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
