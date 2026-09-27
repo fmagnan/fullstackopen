@@ -9,21 +9,11 @@ const totalLikes = (blogs) => {
 }
 
 const favoriteBlog = (blogs) => {
-  let favorite = null
-  if (blogs.length===0) {
-    return favorite
-  }
+  if (blogs.length === 0) return null
 
-  blogs.forEach((blog) => {
-    if (favorite === null) {
-      favorite = blog
-    }
-    if (favorite.likes < blog.likes) {
-      favorite = blog
-    }
-  })
-
-  return favorite
+  return blogs.reduce((favorite, blog) =>
+    blog.likes > favorite.likes ? blog : favorite
+  )
 }
 
 module.exports = {
