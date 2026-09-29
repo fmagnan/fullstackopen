@@ -37,6 +37,13 @@ test('a specific blog is within the returned blogs', async () => {
   assert(authors.includes('Edsger W. Dijkstra'))
 })
 
+test('first blog has property "id"', async () => {
+  const response = await api.get('/api/blogs')
+
+  const firstBlog = response.body[0]
+  assert.ok(Object.hasOwn(firstBlog, 'id'))
+})
+
 test('a valid blog can be added', async () => {
   const newBlog = {
     title: 'Small and secure Docker images for Rust: Alpine vs Debian vs Scratch',
@@ -53,14 +60,54 @@ test('a valid blog can be added', async () => {
 
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.length, listWithManyBlogs.length + 1)
-  const titles = blogsAtEnd.map(n => n.title)
+  const lastBlog = blogsAtEnd.pop()
+  delete(lastBlog.id)
 
-  assert(titles.includes('Small and secure Docker images for Rust: Alpine vs Debian vs Scratch'))
+  assert.deepStrictEqual(newBlog, lastBlog)
+})
+
+test('a blog without likes property is still valid', async () => {
+  const newBlog = {
+    title: 'Small and secure Docker images for Rust: Alpine vs Debian vs Scratch',
+    author: 'Sylvain Kerkour',
+    url: 'https://kerkour.com/rust-docker',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  newBlog.likes = 0
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, listWithManyBlogs.length + 1)
+  const lastBlog = blogsAtEnd.pop()
+  delete(lastBlog.id)
+
+  assert.deepStrictEqual(newBlog, lastBlog)
 })
 
 test('blog without title is not added', async () => {
   const newBlog = {
     author: 'Martin Fowler'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  assert.strictEqual(blogsAtEnd.length, listWithManyBlogs.length)
+})
+
+test('blog without url is not added', async () => {
+  const newBlog = {
+    author: 'Martin Fowler',
+    title: 'this is a fake title'
   }
 
   await api
