@@ -1,7 +1,7 @@
 const Blog = require('../models/blog')
 
 const nonExistingId = async () => {
-  const blog = new Blog({ title: 'willremovethissoon' })
+  const blog = new Blog({ title: 'willremovethissoon' , url:'https://some.secure.url' })
   await blog.save()
   await blog.deleteOne()
 
