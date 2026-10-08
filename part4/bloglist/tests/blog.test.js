@@ -5,17 +5,18 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
-const {
-  listWithOneBlog,
-  listWithManyBlogs,
-} = require('../fixtures/blogs_list')
-
+const User = require('../models/user')
+const listWithManyBlogs = require('../fixtures/blogs_list').listWithManyBlogs
+const usersList = require('../fixtures/users_list')
 const api = supertest(app)
 
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(listWithManyBlogs)
+
+    await User.deleteMany({})
+    await User.insertMany(usersList)
   })
 
   test('bloglist is returned as json', async () => {
@@ -47,15 +48,18 @@ describe('when there is initially some blogs saved', () => {
 
   describe('viewing a specific blog', () => {
     test('succeeds with a valid id', async () => {
-      const blogsAtStart = await helper.blogsInDb()
-      const firstBlog = blogsAtStart[0]
+      const user = (await helper.usersInDb())[0]
+      const firstBlog = (await helper.blogsInDb())[0]
 
       const resultBlog = await api
         .get(`/api/blogs/${firstBlog.id}`)
         .expect(200)
         .expect('Content-Type', /application\/json/)
 
-      assert.deepStrictEqual(resultBlog.body, firstBlog)
+      assert.deepStrictEqual(
+        resultBlog.body,
+        { ...firstBlog, user: { id: user.id, name:user.name, username:user.username } }
+      )
     })
 
     test('fails with statuscode 404 if blog does not exist', async () => {
@@ -74,11 +78,14 @@ describe('when there is initially some blogs saved', () => {
   describe('addition of a new blog', () => {
 
     test('succeeds with valid data', async () => {
+      const user = (await helper.usersInDb())[0]
+
       const newBlog = {
         title: 'Small and secure Docker images for Rust: Alpine vs Debian vs Scratch',
         author: 'Sylvain Kerkour',
         url: 'https://kerkour.com/rust-docker',
         likes: 18,
+        userId: user.id
       }
 
       await api
@@ -91,15 +98,18 @@ describe('when there is initially some blogs saved', () => {
       assert.strictEqual(blogsAtEnd.length, listWithManyBlogs.length + 1)
       const lastBlog = blogsAtEnd.pop()
       delete(lastBlog.id)
+      delete(lastBlog.user)
 
-      assert.deepStrictEqual(newBlog, lastBlog)
+      assert.deepStrictEqual({ ...lastBlog, userId: user.id },newBlog)
     })
 
     test('a blog without likes property is still valid', async () => {
+      const user = (await helper.usersInDb())[0]
       const newBlog = {
         title: 'Small and secure Docker images for Rust: Alpine vs Debian vs Scratch',
         author: 'Sylvain Kerkour',
         url: 'https://kerkour.com/rust-docker',
+        userId: user.id
       }
 
       await api
@@ -114,8 +124,9 @@ describe('when there is initially some blogs saved', () => {
       assert.strictEqual(blogsAtEnd.length, listWithManyBlogs.length + 1)
       const lastBlog = blogsAtEnd.pop()
       delete(lastBlog.id)
+      delete(lastBlog.user)
 
-      assert.deepStrictEqual(newBlog, lastBlog)
+      assert.deepStrictEqual({ ...lastBlog, userId: user.id }, newBlog )
     })
 
     test('blog without title is not added', async () => {
